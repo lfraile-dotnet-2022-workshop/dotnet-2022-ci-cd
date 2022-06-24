@@ -55,7 +55,7 @@ jobs:
         path: arm
     
   deploy_dev:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && github.event_name == 'push')
     needs: build    
     uses: ./.github/workflows/template-deploy.yml
     with:
