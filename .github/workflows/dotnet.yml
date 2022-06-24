@@ -3,6 +3,7 @@ name: CI/CD .Net Core
 on: 
   workflow_dispatch:
   push:
+    branches-ignore: [ main ]
   pull_request:
     branches: [ main ]
 
