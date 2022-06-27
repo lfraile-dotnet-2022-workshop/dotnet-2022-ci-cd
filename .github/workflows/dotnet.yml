@@ -54,8 +54,8 @@ jobs:
         name: arm_template
         path: arm
     
-
   deploy_dev:
+    if: github.event_name == 'pull_request' || (github.ref == 'refs/heads/main' && github.event_name == 'push')
     needs: build    
     uses: ./.github/workflows/template-deploy.yml
     with:
@@ -71,6 +71,7 @@ jobs:
       IDENTITY_DB_CONNSTRING: ${{ secrets.IDENTITY_DB_CONNSTRING }}
 
   deploy_pro:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: deploy_dev
     uses: ./.github/workflows/template-deploy.yml
     with:
