@@ -54,6 +54,7 @@ jobs:
         name: arm_template
         path: arm
     
+
   deploy_dev:
     needs: build    
     uses: ./.github/workflows/template-deploy.yml
@@ -83,3 +84,4 @@ jobs:
       CONNSTRING_JSON: ${{ secrets.CONNSTRING_JSON }}
       CATALOG_DB_CONNSTRING: ${{ secrets.CATALOG_DB_CONNSTRING }}
       IDENTITY_DB_CONNSTRING: ${{ secrets.IDENTITY_DB_CONNSTRING }}
+
