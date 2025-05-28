@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.eShopWeb.ApplicationCore.Configuration;
 using Microsoft.eShopWeb.ApplicationCore.Constants;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
@@ -21,6 +22,7 @@ using Microsoft.eShopWeb.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -96,27 +98,33 @@ namespace Microsoft.eShopWeb.PublicApi
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddScoped<ITokenClaimsService, IdentityTokenClaimService>();
 
+            // Configure JWT settings
+            services.Configure<JwtSettings>(Configuration.GetSection(JwtSettings.SectionName));
+
             var baseUrlConfig = new BaseUrlConfiguration();
             Configuration.Bind(BaseUrlConfiguration.CONFIG_NAME, baseUrlConfig);
             services.AddScoped<IFileSystem, WebFileSystem>(x => new WebFileSystem($"{baseUrlConfig.WebBase}File"));
 
             services.AddMemoryCache();
 
-            var key = Encoding.ASCII.GetBytes(AuthorizationConstants.JWT_SECRET_KEY);
+            // Configure JWT authentication using IOptions
             services.AddAuthentication(config =>
             {
                 config.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(config =>
             {
-                config.RequireHttpsMetadata = false;
-                config.SaveToken = true;
+                var jwtSettings = Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>();
+                var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
+                
+                config.RequireHttpsMetadata = jwtSettings.RequireHttpsMetadata;
+                config.SaveToken = jwtSettings.SaveToken;
                 config.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
+                    ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = jwtSettings.ValidateIssuer,
+                    ValidateAudience = jwtSettings.ValidateAudience
                 };
             });
 
