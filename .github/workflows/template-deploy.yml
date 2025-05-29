@@ -51,12 +51,12 @@ jobs:
         path: arm_template
     
     - name: 'Login via Azure CLI'
-      uses: azure/login@v2
+      uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: Deploy Azure Resource Manager (ARM) Template
-      uses: Azure/arm-deploy@v2
+      uses: Azure/arm-deploy@v1
       with:        
         scope: resourcegroup
         subscriptionId: '26da47a8-c28d-4564-ae8e-8ba88e995a0a'     
@@ -67,26 +67,26 @@ jobs:
         parameters: servers_netcoregithub_name=${{ env.sql_name }} sites_netcoregithub_name=${{ env.site }} sqlserver_password=${{ secrets.DB_PASSWORD }}
 
     - name: Azure WebApp
-      uses: Azure/webapps-deploy@v3
+      uses: Azure/webapps-deploy@v2
       with:
         app-name: ${{ env.site }}      
         package: web_site
 
     - name: Azure App Service Settings
-      uses: Azure/appservice-settings@v2
+      uses: Azure/appservice-settings@v1
       with:
         app-name: ${{ env.site }}
         connection-strings-json: ${{ secrets.CONNSTRING_JSON }}
 
     - name: Azure SQL Deploy
-      uses: Azure/sql-action@v2
+      uses: Azure/sql-action@v1
       with:
         server-name: ${{ env.sql_name }}.database.windows.net
         connection-string: ${{ secrets.CATALOG_DB_CONNSTRING }}
         sql-file: sql_scripts/catalog.sql
         
     - name: Azure SQL Deploy
-      uses: Azure/sql-action@v2
+      uses: Azure/sql-action@v1
       with:
         server-name: ${{ env.sql_name }}.database.windows.net
         connection-string: ${{ secrets.IDENTITY_DB_CONNSTRING }}
