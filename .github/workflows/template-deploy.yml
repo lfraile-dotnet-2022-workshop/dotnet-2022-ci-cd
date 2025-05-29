@@ -29,7 +29,7 @@ on:
 jobs:
   deploy:
     environment: ${{ inputs.environment-to-deploy }}
-    runs-on: windows-latest
+    runs-on: ubuntu-22.04
     env:
       site: ${{ inputs.site-name }}
       sql_name: ${{ inputs.sql-name }}
