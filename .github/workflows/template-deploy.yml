@@ -16,8 +16,6 @@ on:
         required: true
         type: string
     secrets:
-      AZURE_CREDENTIALS:
-        required: true
       DB_PASSWORD:
         required: true
       CONNSTRING_JSON:
@@ -26,6 +24,10 @@ on:
         required: true
       IDENTITY_DB_CONNSTRING:
         required: true
+
+permissions:
+  id-token: write
+  contents: read
 jobs:
   deploy:
     environment: ${{ inputs.environment-to-deploy }}
@@ -35,17 +37,17 @@ jobs:
       sql_name: ${{ inputs.sql-name }}
     steps:
     - name: Download scripts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: sql_scripts
         path: sql_scripts
     - name: Download site
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: web_site
         path: web_site
     - name: Download arm
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: arm_template
         path: arm_template
@@ -53,13 +55,15 @@ jobs:
     - name: 'Login via Azure CLI'
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        client-id: ${{ vars.APPLICATION_ID }}
+        tenant-id: ${{ vars.TENANT_ID }}
+        subscription-id: ${{ vars.SUBSCRIPTION_ID }}
         
     - name: Deploy Azure Resource Manager (ARM) Template
       uses: Azure/arm-deploy@v1
       with:        
         scope: resourcegroup
-        subscriptionId: '26da47a8-c28d-4564-ae8e-8ba88e995a0a'     
+        subscriptionId: ${{ vars.SUBSCRIPTION_ID }}     
         resourceGroupName: ${{ inputs.resource-group }}
         template: arm_template/netcore_no_docker_rg_arm.json
         deploymentMode: Incremental

@@ -8,14 +8,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       build_config: Release
     steps:
-    - uses: actions/checkout@v2.4.2
+    - uses: actions/checkout@v4
     
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v2.1.0
+      uses: actions/setup-dotnet@v4
     
     - name: Install dotnet tools
       run: dotnet tool restore
@@ -37,19 +37,19 @@ jobs:
       run: dotnet ef migrations script -c appidentitydbcontext  -i -p ./src/Infrastructure/Infrastructure.csproj -s ./src/Web/Web.csproj -o ./scripts/identity.sql
     
     - name: Upload scripts
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v4
       with:
         name: sql_scripts
         path: ./scripts
     
     - name: Upload site
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v4
       with:
         name: web_site
         path: ./web_publish
     
     - name: Upload ARM
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v4
       with:
         name: arm_template
         path: arm
@@ -64,7 +64,6 @@ jobs:
       sql-name: dotnet22devsql
       resource-group: DotNet2022_Dev_RG
     secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       CONNSTRING_JSON: ${{ secrets.CONNSTRING_JSON }}
       CATALOG_DB_CONNSTRING: ${{ secrets.CATALOG_DB_CONNSTRING }}
@@ -80,7 +79,6 @@ jobs:
       sql-name: dotnet22prosql
       resource-group: DotNet2022_Pro_RG
     secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       CONNSTRING_JSON: ${{ secrets.CONNSTRING_JSON }}
       CATALOG_DB_CONNSTRING: ${{ secrets.CATALOG_DB_CONNSTRING }}
