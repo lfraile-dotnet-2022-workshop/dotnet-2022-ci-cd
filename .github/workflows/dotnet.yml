@@ -64,7 +64,6 @@ jobs:
       sql-name: dotnet22devsql
       resource-group: DotNet2022_Dev_RG
     secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       CONNSTRING_JSON: ${{ secrets.CONNSTRING_JSON }}
       CATALOG_DB_CONNSTRING: ${{ secrets.CATALOG_DB_CONNSTRING }}
@@ -80,7 +79,6 @@ jobs:
       sql-name: dotnet22prosql
       resource-group: DotNet2022_Pro_RG
     secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       CONNSTRING_JSON: ${{ secrets.CONNSTRING_JSON }}
       CATALOG_DB_CONNSTRING: ${{ secrets.CATALOG_DB_CONNSTRING }}
